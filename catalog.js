@@ -277,7 +277,20 @@ const coverPhoto = st => {
 /* Para usar una dirección dentro de url('...') en CSS sin romper comillas ni paréntesis */
 const cssUrl = u => String(u).replace(/["'()\s\\<>&]/g, c => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"));
 
+// Contacto de los links viejos (versión 2 y 3), que tenían una sola persona
 const CONTACT_DEFAULT = { cName: "Brian Jaffe", cRole: "Director", cEmail: "brian@wecode.edu.uy", cPhone: "094 293 160" };
+// Equipo que puede firmar una propuesta. El orden importa: cada persona es un bit del link (no cambiarlo, solo agregar al final)
+const TEAM = [
+  { id: "brian", name: "Brian Jaffe", role: "Director", email: "brian@wecode.edu.uy", phone: "094 293 160", photo: "team/brian.png" },
+  { id: "lucia", name: "Lucía Wisznewer", role: "Líder de nuevos acuerdos", email: "lucia@wecode.edu.uy", phone: "", photo: "team/lucia.png" },
+];
+const TEAM_DEFAULT = 3; // Brian y Lucía
+function contactsFor(st) {
+  if (typeof st.team === "number") return TEAM.filter((p, i) => st.team & (1 << i));
+  const p = { name: st.cName || "Equipo WeCode", role: st.cRole || "", email: st.cEmail || "", phone: st.cPhone || "", photo: "" };
+  const known = TEAM.find(t => t.email === p.email && t.name === p.name);
+  return [known ? { ...p, photo: known.photo } : p];
+}
 const B32 = "abcdefghijklmnopqrstuvwxyz234567";
 function toB32(bytes) {
   let out = "", bits = 0, val = 0;
@@ -296,10 +309,9 @@ function packState(st) {
   const u16 = n => { n = Math.max(0, Math.min(65535, Math.round(Number(n) || 0))); b.push(n >> 8, n & 255); };
   const u8 = n => b.push(Math.max(0, Math.min(255, Math.round(Number(n) || 0))));
   const str = s => { const e = new TextEncoder().encode(String(s || "")).slice(0, 255); b.push(e.length, ...e); };
-  const custom = Object.keys(CONTACT_DEFAULT).some(k => String(st[k] || "") !== CONTACT_DEFAULT[k]);
   const note = String(st.extraNote || "").trim();
   const photoUrl = String(st.photoUrl || "").trim();
-  b.push(3, (custom ? 1 : 0) | (note ? 2 : 0) | (photoUrl ? 4 : 0) | (st.intro === false ? 8 : 0));
+  b.push(4, (note ? 2 : 0) | (photoUrl ? 4 : 0) | (st.intro === false ? 8 : 0));
   u8((Number(st.year) || 2000) - 2000);
   const [y, m, d] = String(st.date || "").split("-").map(Number);
   u16(y && m && d ? Math.round((Date.UTC(y, m - 1, d) - DAY0) / 864e5) + 1 : 0);
@@ -312,9 +324,9 @@ function packState(st) {
   for (let k = 0; k < nib.length; k += 2) b.push((nib[k] << 4) | (nib[k + 1] || 0));
   u16(st.priceCur); u16(st.priceExt); u8(st.minCur); u8(st.minExt); u16(st.refAcademy); u16(st.refAllies);
   u8(st.photo);
+  u8(typeof st.team === "number" ? st.team : TEAM_DEFAULT);
   str(st.school);
   if (note) str(note);
-  if (custom) Object.keys(CONTACT_DEFAULT).forEach(k => str(st[k]));
   if (photoUrl) str(photoUrl);
   return new Uint8Array(b);
 }
@@ -324,7 +336,7 @@ function unpackState(b) {
   const u16 = () => (b[i++] << 8) | b[i++];
   const str = () => { const n = b[i++]; const s = new TextDecoder().decode(b.slice(i, i + n)); i += n; return s; };
   const version = u8();
-  if (version !== 2 && version !== 3) throw new Error("versión desconocida");
+  if (version < 2 || version > 4) throw new Error("versión desconocida");
   const flags = u8();
   const st = { grades: {}, intro: !(flags & 8) };
   st.year = 2000 + u8();
@@ -339,6 +351,7 @@ function unpackState(b) {
   });
   st.priceCur = u16(); st.priceExt = u16(); st.minCur = u8(); st.minExt = u8(); st.refAcademy = u16(); st.refAllies = u16();
   st.photo = version >= 3 ? u8() : 0;
+  if (version >= 4) st.team = u8();
   st.school = str();
   st.extraNote = flags & 2 ? str() : "";
   Object.keys(CONTACT_DEFAULT).forEach(k => { st[k] = flags & 1 ? str() : CONTACT_DEFAULT[k]; });
