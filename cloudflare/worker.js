@@ -57,6 +57,7 @@ function json(data, status = 200) {
 const PUBLISH_PAGE = `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Publicar propuesta · WeCode</title>
+<link rel="icon" href="/img/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #3462ac; font-family: Poppins, system-ui, sans-serif; color: #1a3d66; padding: 20px; box-sizing: border-box; }
