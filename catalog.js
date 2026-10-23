@@ -227,6 +227,27 @@ const GALLERY = ["g01.jpg","g02.jpg","g03.jpg","g04.jpg","g05.jpg","g06.jpg","g0
    le pasa a la página etiquetas simples, así que se empaquetan en
    bytes y se escriben con minúsculas y números (base32).
    ========================================================= */
+/* Fotos para la portada (la primera es la que va por defecto) */
+const COVER_PHOTOS = [
+  { file: "kids-laptop.jpg", label: "Chicos con laptops" },
+  { file: "classroom.jpg", label: "Clase con educador" },
+  { file: "certificates.jpg", label: "Entrega de certificados" },
+  { file: "gal/g05.jpg", label: "Programando en la Feria" },
+  { file: "gal/g06.jpg", label: "Proyecto con robot" },
+  { file: "gal/g02.jpg", label: "Educador con estudiantes" },
+  { file: "gal/g11.jpg", label: "Concentrado en su juego" },
+  { file: "gal/g10.jpg", label: "Medallas y diplomas" },
+  { file: "gal/g04.jpg", label: "Grupo en la Feria" },
+];
+const coverPhoto = st => {
+  const url = String(st.photoUrl || "").trim();
+  if (/^https:\/\/\S+$/i.test(url)) return url;
+  return "img/" + (COVER_PHOTOS[st.photo] || COVER_PHOTOS[0]).file;
+};
+
+/* Para usar una dirección dentro de url('...') en CSS sin romper comillas ni paréntesis */
+const cssUrl = u => String(u).replace(/["'()\s\\<>&]/g, c => "%" + c.charCodeAt(0).toString(16).padStart(2, "0"));
+
 const CONTACT_DEFAULT = { cName: "Brian Jaffe", cRole: "Director", cEmail: "brian@wecode.edu.uy", cPhone: "094 293 160" };
 const B32 = "abcdefghijklmnopqrstuvwxyz234567";
 function toB32(bytes) {
@@ -248,7 +269,8 @@ function packState(st) {
   const str = s => { const e = new TextEncoder().encode(String(s || "")).slice(0, 255); b.push(e.length, ...e); };
   const custom = Object.keys(CONTACT_DEFAULT).some(k => String(st[k] || "") !== CONTACT_DEFAULT[k]);
   const note = String(st.extraNote || "").trim();
-  b.push(2, (custom ? 1 : 0) | (note ? 2 : 0));
+  const photoUrl = String(st.photoUrl || "").trim();
+  b.push(3, (custom ? 1 : 0) | (note ? 2 : 0) | (photoUrl ? 4 : 0));
   u8((Number(st.year) || 2000) - 2000);
   const [y, m, d] = String(st.date || "").split("-").map(Number);
   u16(y && m && d ? Math.round((Date.UTC(y, m - 1, d) - DAY0) / 864e5) + 1 : 0);
@@ -259,9 +281,11 @@ function packState(st) {
   });
   for (let k = 0; k < nib.length; k += 2) b.push((nib[k] << 4) | (nib[k + 1] || 0));
   u16(st.priceCur); u16(st.priceExt); u8(st.minCur); u8(st.minExt); u16(st.refAcademy); u16(st.refAllies);
+  u8(st.photo);
   str(st.school);
   if (note) str(note);
   if (custom) Object.keys(CONTACT_DEFAULT).forEach(k => str(st[k]));
+  if (photoUrl) str(photoUrl);
   return new Uint8Array(b);
 }
 function unpackState(b) {
@@ -269,7 +293,8 @@ function unpackState(b) {
   const u8 = () => b[i++];
   const u16 = () => (b[i++] << 8) | b[i++];
   const str = () => { const n = b[i++]; const s = new TextDecoder().decode(b.slice(i, i + n)); i += n; return s; };
-  if (u8() !== 2) throw new Error("versión desconocida");
+  const version = u8();
+  if (version !== 2 && version !== 3) throw new Error("versión desconocida");
   const flags = u8();
   const st = { grades: {} };
   st.year = 2000 + u8();
@@ -283,9 +308,11 @@ function unpackState(b) {
       : { on: false, program: progs[0].id, mod: "extra" };
   });
   st.priceCur = u16(); st.priceExt = u16(); st.minCur = u8(); st.minExt = u8(); st.refAcademy = u16(); st.refAllies = u16();
+  st.photo = version >= 3 ? u8() : 0;
   st.school = str();
   st.extraNote = flags & 2 ? str() : "";
   Object.keys(CONTACT_DEFAULT).forEach(k => { st[k] = flags & 1 ? str() : CONTACT_DEFAULT[k]; });
+  st.photoUrl = flags & 4 ? str() : "";
   return st;
 }
 async function encodeProposal(st) { return "p" + toB32(packState(st)); }

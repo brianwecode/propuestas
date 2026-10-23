@@ -68,10 +68,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* Portada */
 .hero { padding-block: 64px 96px; }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; position: relative; z-index: 1; }
-.hero .for { font-size: 20px; color: rgba(255,255,255,.8); margin: 22px 0 4px; }
+.hero .for { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: clamp(22px, 2.6vw, 28px); font-weight: 600; color: #fff; margin: 0 0 10px; line-height: 1.2; }
+.hero .for img { height: 1.35em; width: auto; display: block; transform: translateY(.06em); }
+.hero .for .yr { color: var(--yellow); }
 .hero h1 { font-size: clamp(42px, 7vw, 76px); line-height: 1.02; font-weight: 800; margin: 0; color: #fff; letter-spacing: -.02em; text-wrap: balance; overflow-wrap: anywhere; }
 .hero .tag { font-size: clamp(21px, 2.6vw, 28px); line-height: 1.25; font-weight: 700; color: var(--yellow); margin: 22px 0 0; text-wrap: balance; }
-.hero .meta { margin-top: 28px; font-size: 15px; color: rgba(255,255,255,.75); }
+.hero .meta { margin-top: 26px; font-size: 15px; color: rgba(255,255,255,.75); }
 .hero .ph { position: relative; aspect-ratio: 44 / 50; max-width: 100%; border-radius: 36px; border: 10px solid #fff; background: center / cover no-repeat; box-shadow: 0 30px 60px rgba(10, 30, 70, .35); }
 .hero .ph .stk { position: absolute; left: -38px; bottom: 34px; width: 96px; }
 .hero .scroll { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-size: 13px; color: rgba(255,255,255,.7); text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 1; }
@@ -244,7 +246,7 @@ details.box li::marker { color: var(--orange); }
   </div>
 </div>
 
-<script src="catalog.js?v=3"></script>
+<script src="catalog.js?v=4"></script>
 <script>
 "use strict";
 const IMG = "img/";
@@ -319,11 +321,10 @@ function render(st) {
       '<img class="doodle hide-sm" src="' + IMG + 'd-squiggle-o.png" style="right:-40px;bottom:30px;width:420px" alt="">' +
       '<img class="doodle fly hide-sm" src="' + IMG + 'd-rocket.png" style="right:3%;bottom:70px;width:150px;z-index:2" alt="">' +
       '<div class="wrap"><div class="rise">' +
-        '<span class="pill ext">Propuesta ' + esc(st.year) + "</span>" +
-        '<p class="for">Preparada para</p><h1>' + esc(school) + "</h1>" +
+        '<p class="for"><span>Propuesta <span class="yr">' + esc(st.year) + '</span></span><img src="' + IMG + 'logo-white.png" alt="WeCode"><span>para</span></p><h1>' + esc(school) + "</h1>" +
         '<p class="tag">Pensamiento computacional, programación y robótica.</p>' +
-        '<p class="meta">Año lectivo ' + esc(st.year) + (longDate(st.date) ? " · " + esc(longDate(st.date)) : "") + "</p></div>" +
-        '<div class="ph rise" style="animation-delay:.15s;background-image:url(\'' + IMG + 'kids-laptop.jpg\')"><img class="stk" src="' + IMG + 'st/happy.svg" alt=""></div>' +
+        (longDate(st.date) ? '<p class="meta">' + esc(longDate(st.date)) + "</p>" : "") + "</div>" +
+        '<div class="ph rise" style="animation-delay:.15s;background-image:url(\'' + cssUrl(coverPhoto(st)) + '\')"><img class="stk" src="' + IMG + 'st/happy.svg" alt=""></div>' +
       '</div><a class="scroll" href="#vistazo">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
 
     '<section class="band glance" id="vistazo"><div class="wrap"><div class="head"><p class="eyebrow">' + esc(school) + ' de un vistazo</p><h2>' +
