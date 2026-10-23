@@ -256,7 +256,7 @@ details.box li::marker { color: var(--orange); }
   .rise { animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; }
   .hero .ph .stk, .close .ph img, .about .ph img { animation: bob 3.2s ease-in-out infinite; }
   @supports (animation-timeline: view()) {
-    .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% cover 28%; }
+    .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
   }
 }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } html { scroll-behavior: auto; } }
@@ -319,7 +319,7 @@ function render(st) {
   const tagsOf = tagsHtml;
   const progArticle = (r, i) => '<article class="prog reveal" id="prog-' + i + '"><div class="pimg" ' + bgStyle(r.prog.img + ".jpg") + ' role="img" aria-label="' + esc(r.prog.title) + '"></div><div>' +
     tagsOf(r) + "<h3>" + esc(r.prog.title) + "</h3>" + r.prog.paras.map(p => "<p>" + rich(p) + "</p>").join("") + "</div></article>";
-  const kinderBlock = (r, i) => '<article class="kinder reveal" id="prog-' + i + '">' +
+  const kinderBlock = (r, i) => '<article class="kinder" id="prog-' + i + '">' +
       '<img class="kd stack-img" src="' + IMG + 'kinder/stack.svg" alt="">' +
       '<img class="kd float" src="' + IMG + 'kinder/brick-yellow.svg" style="right:290px;top:30px;width:84px;--r:-12deg" alt="">' +
       '<img class="kd hide-sm" src="' + IMG + 'kinder/brick-orange.svg" style="left:-20px;bottom:26px;width:84px;transform:rotate(18deg)" alt="">' +
@@ -336,7 +336,7 @@ function render(st) {
     const deco = lvl === "primaria"
       ? '<img class="kd float" src="' + IMG + 'd-rocket.png" style="right:36px;top:26px;width:120px;--r:8deg" alt=""><img class="kd spin hide-sm" src="' + IMG + 'd-star1.png" style="right:190px;top:40px;width:34px" alt=""><span class="kd plus hide-sm" style="left:46%;top:34px">+</span>'
       : '<img class="kd float" src="' + IMG + 'st/code.svg" style="right:40px;top:30px;width:86px;--r:-8deg" alt=""><img class="kd spin hide-sm" src="' + IMG + 'd-star2.png" style="right:160px;top:52px;width:30px" alt=""><span class="kd plus sky hide-sm" style="left:46%;top:34px">+</span>';
-    return '<section class="level-box lv-' + lvl + ' reveal">' + deco + '<h3 class="level-name">' + name + '</h3><div class="progs">' + list.map(x => progArticle(x.r, x.i)).join("") + "</div></section>";
+    return '<section class="level-box lv-' + lvl + '">' + deco + '<h3 class="level-name">' + name + '</h3><div class="progs">' + list.map(x => progArticle(x.r, x.i)).join("") + "</div></section>";
   };
   const kinderRow = indexed.find(x => x.r.band === "k5");
   const progs = (kinderRow ? kinderBlock(kinderRow.r, kinderRow.i) : "") + levelBlock("primaria", "Primaria") + levelBlock("secundaria", "Secundaria");
