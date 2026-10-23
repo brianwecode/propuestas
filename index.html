@@ -114,7 +114,7 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 .pcard li::before { content: ""; position: absolute; left: 0; top: 7px; width: 10px; height: 10px; border-radius: 50%; background: currentColor; opacity: .5; }
 .glance .sub { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); margin: 34px 0 0; }
 .glance .track { margin-top: 16px; }
-.pnotes { list-style: none; margin: 26px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 10px 32px; font-size: 15px; line-height: 1.45; }
+.pnotes { list-style: none; margin: 22px 0 0; padding: 22px 26px; border-radius: 22px; background: var(--pale); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px 28px; font-size: 15px; line-height: 1.45; }
 .pnotes li { padding-left: 20px; position: relative; }
 .pnotes li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
 
@@ -462,7 +462,7 @@ function render(st) {
         '<span><i style="background:var(--chip-off)"></i>No incluido</span></div>' +
       '<div class="prices">' + priceCards + "</div>" +
       '<ul class="pnotes"><li>10 cuotas, de marzo a diciembre.</li><li>Incluye todos los materiales, a excepción de las computadoras, que provee la institución.</li>' +
-        '<li>Se abona del 1 al 10 de cada mes, por transferencia bancaria.</li><li>WeCode es contribuyente exonerado de IVA: el precio es final.</li></ul></div></section>' +
+        '<li>Se abona en los primeros 5 días hábiles de cada mes, por transferencia bancaria.</li><li>WeCode es contribuyente exonerado de IVA: el precio es final.</li></ul></div></section>' +
 
     '<section class="band" id="condiciones"><div class="wrap"><p class="eyebrow">Condiciones</p><h2>La letra chica, clara</h2><div class="acc">' + termCols + "</div>" +
       (annex ? '<div style="margin-top:56px"><p class="eyebrow">Anexo</p><h2>Alineación curricular</h2><p class="lead">Cómo el programa de WeCode cumple con los requerimientos de ANEP y DGES para los grados de esta propuesta.</p><div class="acc">' + annex + "</div></div>" : "") +
