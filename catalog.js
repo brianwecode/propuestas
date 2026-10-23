@@ -270,7 +270,7 @@ function packState(st) {
   const custom = Object.keys(CONTACT_DEFAULT).some(k => String(st[k] || "") !== CONTACT_DEFAULT[k]);
   const note = String(st.extraNote || "").trim();
   const photoUrl = String(st.photoUrl || "").trim();
-  b.push(3, (custom ? 1 : 0) | (note ? 2 : 0) | (photoUrl ? 4 : 0));
+  b.push(3, (custom ? 1 : 0) | (note ? 2 : 0) | (photoUrl ? 4 : 0) | (st.intro === false ? 8 : 0));
   u8((Number(st.year) || 2000) - 2000);
   const [y, m, d] = String(st.date || "").split("-").map(Number);
   u16(y && m && d ? Math.round((Date.UTC(y, m - 1, d) - DAY0) / 864e5) + 1 : 0);
@@ -296,7 +296,7 @@ function unpackState(b) {
   const version = u8();
   if (version !== 2 && version !== 3) throw new Error("versión desconocida");
   const flags = u8();
-  const st = { grades: {} };
+  const st = { grades: {}, intro: !(flags & 8) };
   st.year = 2000 + u8();
   const days = u16();
   st.date = days ? new Date(DAY0 + (days - 1) * 864e5).toISOString().slice(0, 10) : "";

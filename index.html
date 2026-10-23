@@ -246,7 +246,7 @@ details.box li::marker { color: var(--orange); }
   </div>
 </div>
 
-<script src="catalog.js?v=4"></script>
+<script src="catalog.js?v=5"></script>
 <script>
 "use strict";
 const IMG = "img/";
@@ -325,7 +325,17 @@ function render(st) {
         '<p class="tag">Pensamiento computacional, programación y robótica.</p>' +
         (longDate(st.date) ? '<p class="meta">' + esc(longDate(st.date)) + "</p>" : "") + "</div>" +
         '<div class="ph rise" style="animation-delay:.15s;background-image:url(\'' + cssUrl(coverPhoto(st)) + '\')"><img class="stk" src="' + IMG + 'st/happy.svg" alt=""></div>' +
-      '</div><a class="scroll" href="#vistazo">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
+      '</div><a class="scroll" href="' + (st.intro !== false ? "#quienes" : "#vistazo") + '">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
+
+    (st.intro !== false ? (
+    '<section class="band pale about" id="quienes"><div class="wrap"><div class="reveal"><p class="eyebrow">Qué hace WeCode</p><h2>Programación y robótica, dentro de tu colegio</h2><ul>' +
+      ["Programas originales para enseñar tecnología a niños y adolescentes.", "Aprendizaje por proyectos, basado en la experimentación y la creación.",
+       "Un equipo de educadores de WeCode visita el colegio cada semana y dicta las clases.", "Creamos animaciones, videojuegos, apps, proyectos electrónicos y robots."]
+        .map(t => '<li><img src="' + IMG + 'st/check.svg" alt="">' + t + "</li>").join("") +
+      '</ul></div><div class="ph reveal" ' + bgStyle("classroom.jpg") + '><img src="' + IMG + 'st/code.svg" alt=""></div></div></section>'
+      +
+    '<section class="trust"><div class="wrap"><p class="lbl">Confían en WeCode<span class="count">' + SCHOOL_LOGOS.length + ' instituciones</span></p></div><div class="marquee" aria-label="Colegios que trabajan con WeCode"><div class="marquee-track"><div class="marquee-set">' + logos + '</div><div class="marquee-set" aria-hidden="true">' + logos + "</div></div></div></section>"
+    ) : "") +
 
     '<section class="band glance" id="vistazo"><div class="wrap"><div class="head"><p class="eyebrow">' + esc(school) + ' de un vistazo</p><h2>' +
       nGr + (nGr === 1 ? " grado" : " grados") + ", " + M.rows.length + (M.rows.length === 1 ? " programa" : " programas") + " y un año de proyectos</h2></div>" +
@@ -334,14 +344,6 @@ function render(st) {
         '<span><i style="background:var(--chip-off)"></i>No incluido</span><span style="color:var(--muted)">Tocá un grado para ver su programa</span></div>' +
       '<div class="prices">' + priceCards + "</div>" +
       '<p class="note">10 mensualidades, de marzo a diciembre · Todos los materiales incluidos</p></div></section>' +
-
-    '<section class="trust"><div class="wrap"><p class="lbl">Confían en WeCode<span class="count">' + SCHOOL_LOGOS.length + ' instituciones</span></p></div><div class="marquee" aria-label="Colegios que trabajan con WeCode"><div class="marquee-track"><div class="marquee-set">' + logos + '</div><div class="marquee-set" aria-hidden="true">' + logos + "</div></div></div></section>" +
-
-    '<section class="band pale about"><div class="wrap"><div class="reveal"><p class="eyebrow">Quiénes somos</p><h2>Programación y robótica, dentro de tu colegio</h2><ul>' +
-      ["Programas originales para enseñar tecnología a niños y adolescentes.", "Aprendizaje por proyectos, basado en la experimentación y la creación.",
-       "Un equipo de educadores de WeCode visita el colegio cada semana y dicta las clases.", "Creamos animaciones, videojuegos, apps, proyectos electrónicos y robots."]
-        .map(t => '<li><img src="' + IMG + 'st/check.svg" alt="">' + t + "</li>").join("") +
-      '</ul></div><div class="ph reveal" ' + bgStyle("classroom.jpg") + '><img src="' + IMG + 'st/code.svg" alt=""></div></div></section>' +
 
     '<section class="band" id="programas"><div class="wrap"><p class="eyebrow">Propuesta pedagógica</p><h2>Qué van a aprender y crear</h2><div class="progs">' + progs + "</div></div></section>" +
 
