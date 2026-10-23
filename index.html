@@ -126,14 +126,54 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 .lg > div { width: 100%; height: 100%; border: 1px solid #131313; border-radius: 4px; display: flex; align-items: center; justify-content: center; padding: 12px; background: #fff; }
 .lg img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
 @media (max-width: 600px) { .trust .lg { width: 72px; height: 72px; } .trust .logo-grid { gap: 8px; } .lg > div { padding: 7px; } }
-/* Galería */
-.gallery { margin-top: 40px; overflow: hidden; }
-.gallery .marquee-track { animation-duration: 60s; animation-direction: reverse; }
-.gallery .marquee-set { gap: 16px; padding-right: 16px; }
-.gallery img { height: 240px; width: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 22px; display: block; }
-.gallery .marquee-set img:nth-child(odd) { transform: rotate(-1.5deg); }
-.gallery .marquee-set img:nth-child(even) { transform: rotate(1.5deg); margin-top: 18px; }
-@media (max-width: 600px) { .gallery img { height: 170px; } }
+/* Feria de Proyectos */
+.band.feria { background-color: var(--yellow); background-image: linear-gradient(rgba(255,255,255,.2) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.2) 1.5px, transparent 1.5px); background-size: 30px 30px; color: var(--navy); }
+.feria .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 56px; align-items: center; position: relative; z-index: 1; }
+.feria .flogo { display: block; width: min(400px, 100%); height: auto; }
+.feria .fclick { display: block; width: min(290px, 80%); height: auto; margin: 14px 0 0 -6px; }
+.feria .eyebrow { color: var(--navy); }
+.feria .fstat { display: flex; align-items: center; gap: 12px; margin: 26px 0 0; }
+.feria .fstat b { font-size: clamp(44px, 6vw, 60px); line-height: 1; font-weight: 800; }
+.feria .fstat span { font-weight: 600; line-height: 1.3; max-width: 26ch; }
+.feria .lead { color: var(--navy); font-size: 18px; }
+.vid { position: relative; display: block; width: calc(100% - 16px); max-width: 480px; aspect-ratio: 16 / 9; margin: 34px 8px 8px; padding: 0; cursor: pointer; font: inherit;
+  background: #131313 center / cover no-repeat; border-radius: 12px; border: 1px solid #131313; box-shadow: 0 0 0 7px #fff, 0 0 0 8px #e5e5e5, 0 18px 30px -12px rgba(26,61,102,.45); }
+.vid::before { content: ""; position: absolute; inset: 0; border-radius: 11px; background: linear-gradient(180deg, rgba(19,19,19,0) 40%, rgba(19,19,19,.55)); }
+.vid .play { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%; background: var(--blue); border: 3px solid #fff; box-shadow: 0 6px 0 var(--navy); transition: transform .2s; }
+.vid .play::after { content: ""; position: absolute; left: 29px; top: 22px; border-style: solid; border-width: 14px 0 14px 22px; border-color: transparent transparent transparent #fff; }
+.vid:hover .play, .vid:focus-visible .play { transform: scale(1.1); }
+.vid:focus-visible { outline: 3px solid var(--navy); outline-offset: 12px; }
+.vid .vlbl { position: absolute; left: 16px; bottom: 12px; color: #fff; font-weight: 700; font-size: 16px; }
+.vid .vbadge { position: absolute; right: -26px; top: -34px; width: 78px; height: auto; transform: rotate(12deg); }
+.fcols { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; height: 600px; }
+.fcol { overflow: hidden; -webkit-mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent); }
+.fcol .ftrack { display: flex; flex-direction: column; }
+.fcol .fset { display: flex; flex-direction: column; gap: 22px; padding: 0 8px 22px; }
+.fcol img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 12px; border: 1px solid #131313; box-shadow: 0 0 0 7px #fff, 0 0 0 8px #e5e5e5; margin-top: 8px; }
+.fcol.down { margin-top: 48px; }
+.fcols .fdeco { position: absolute; z-index: 2; height: auto; pointer-events: none; }
+.fcols .fmedal { width: 120px; left: -54px; bottom: 40px; --r: -10deg; transform: rotate(-10deg); }
+.fcols .fdip { width: 150px; right: -30px; top: -40px; --r: 8deg; transform: rotate(8deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .fcol .ftrack { animation: scrolly 46s linear infinite; }
+  .fcol.down .ftrack { animation-direction: reverse; }
+  .fcols:hover .ftrack { animation-play-state: paused; }
+}
+@keyframes scrolly { to { transform: translateY(-50%); } }
+@media (max-width: 860px) {
+  .feria .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .fcols { height: 420px; }
+  .fcols .fmedal { width: 84px; left: -6px; bottom: 10px; }
+  .fcols .fdip { width: 104px; right: -6px; top: -26px; }
+  .vid .vbadge { right: -10px; width: 60px; }
+}
+/* Video */
+.vmodal { width: min(960px, 92vw); padding: 0; border: 0; border-radius: 16px; background: #131313; overflow: visible; }
+.vmodal::backdrop { background: rgba(19, 19, 19, .82); }
+.vmodal .vframe { aspect-ratio: 16 / 9; width: 100%; }
+.vmodal iframe { width: 100%; height: 100%; border: 0; border-radius: 16px; display: block; }
+.vmodal .vx { position: absolute; right: -6px; top: -50px; width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--yellow); color: var(--navy); font: 700 24px/1 var(--f); cursor: pointer; }
+.vmodal .vyt { position: absolute; left: 0; bottom: -36px; color: #fff; font-size: 14px; }
 @keyframes scrollx { to { transform: translateX(-50%); } }
 
 /* Quiénes somos */
@@ -314,7 +354,9 @@ function render(st) {
       "<li>" + (cur ? "Para todos los alumnos, dentro del horario" : "Optativo: cada familia elige si participa") + "</li></ul></div>";
   }).join("");
   const logoHtml = list => list.map(l => '<div class="lg"><div><img src="' + IMG + "logos/" + l.file + '" alt="' + esc(l.name) + '"></div></div>').join("");
-  const gallery = GALLERY.map(f => '<img src="' + IMG + "gal/" + f + '" alt="Feria de Proyectos de WeCode">').join("");
+  const fcol = (list, cls) => { const set = list.map(f => '<img src="' + IMG + "gal/" + f + '" alt="" loading="lazy">').join("");
+    return '<div class="fcol ' + cls + '"><div class="ftrack"><div class="fset">' + set + '</div><div class="fset" aria-hidden="true">' + set + "</div></div></div>"; };
+  const half = Math.ceil(GALLERY.length / 2);
   const tagsOf = tagsHtml;
   const progArticle = (r, i) => '<article class="prog reveal" id="prog-' + i + '"><div class="pimg" ' + bgStyle(r.prog.img + ".jpg") + ' role="img" aria-label="' + esc(r.prog.title) + '"></div><div>' +
     tagsOf(r) + "<h3>" + esc(r.prog.title) + "</h3>" + r.prog.paras.map(p => "<p>" + rich(p) + "</p>").join("") + "</div></article>";
@@ -404,8 +446,17 @@ function render(st) {
       '<div class="wrap"><p class="eyebrow">Qué incluye</p><h2>Todo lo necesario para que funcione</h2><div class="tiles">' +
       tiles.map(t => '<div class="tile reveal"><img src="' + IMG + "st/" + t[0] + '.svg" alt=""><b>' + t[1] + "</b><span>" + t[2] + "</span></div>").join("") + "</div></div></section>" +
 
-    '<section class="band pale"><div class="wrap"><p class="eyebrow">Feria de Proyectos</p><h2>Así cierran el año nuestros estudiantes</h2><p class="lead">Cada diciembre, los chicos presentan lo que crearon frente a sus familias y reciben sus medallas.</p></div>' +
-      '<div class="marquee gallery" aria-label="Fotos de la Feria de Proyectos"><div class="marquee-track"><div class="marquee-set">' + gallery + '</div><div class="marquee-set" aria-hidden="true">' + gallery + "</div></div></div></section>" +
+    '<section class="band feria" id="feria"><div class="wrap"><div>' +
+        '<h2 style="margin:0"><img class="flogo" src="' + IMG + 'feria/logo.png" alt="Feria de Proyectos"></h2>' +
+        '<img class="fclick" src="' + IMG + 'feria/click.png" alt="Un evento único en Uruguay">' +
+        '<p class="fstat"><b>+1500</b><span>chicos y chicas exponen sus creaciones de Programación y Robótica</span></p>' +
+        '<p class="lead">Al terminar cada año, los coders se gradúan en la Feria de Proyectos: comparten sus videojuegos, apps y robots con sus familias y reciben su merecido diploma.</p>' +
+        '<button type="button" class="vid" id="feriaVid" ' + bgStyle("gal/g03.jpg") + ' aria-label="Ver el video de la Feria de Proyectos"><span class="play"></span><span class="vlbl">Mirá cómo se vive</span>' +
+        '<img class="vbadge" src="' + IMG + 'feria/liston.png" alt=""></button></div>' +
+      '<div class="fcols" aria-label="Fotos de la Feria de Proyectos" role="img">' + fcol(GALLERY.slice(0, half), "up") + fcol(GALLERY.slice(half), "down") +
+        '<img class="fdeco fdip float slow" src="' + IMG + 'feria/diploma.png" alt=""><img class="fdeco fmedal float rev" src="' + IMG + 'feria/medal.png" alt=""></div></div></section>' +
+      '<dialog class="vmodal" id="vmodal" aria-label="Video de la Feria de Proyectos"><button type="button" class="vx" aria-label="Cerrar video">×</button><div class="vframe"></div>' +
+        '<a class="vyt" href="https://www.youtube.com/watch?v=PJQ18Ebc0RQ" target="_blank" rel="noopener">Ver en YouTube ↗</a></dialog>' +
 
     '<section class="band" id="condiciones"><div class="wrap"><p class="eyebrow">Condiciones</p><h2>La letra chica, clara</h2><div class="acc">' + termCols + "</div>" +
       (annex ? '<div style="margin-top:56px"><p class="eyebrow">Anexo</p><h2>Alineación curricular</h2><p class="lead">Cómo el programa de WeCode cumple con los requerimientos de ANEP y DGES para los grados de esta propuesta.</p><div class="acc">' + annex + "</div></div>" : "") +
@@ -436,6 +487,18 @@ function render(st) {
     const fallback = () => { const r = document.createRange(); const n = document.querySelector(".contact .lines span"); if (n) { r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } cm.textContent = "Seleccionado: copialo"; };
     try { navigator.clipboard.writeText(st.cEmail).then(done, fallback); } catch (e) { fallback(); }
   });
+  // Video de la Feria: se abre en un modal y se corta al cerrar
+  const vm = document.getElementById("vmodal"), vb = document.getElementById("feriaVid");
+  if (vm && vb) {
+    const vf = vm.querySelector(".vframe");
+    vb.addEventListener("click", () => {
+      vf.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/PJQ18Ebc0RQ?autoplay=1&rel=0" title="Feria de Proyectos de WeCode" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      if (vm.showModal) vm.showModal(); else window.open("https://www.youtube.com/watch?v=PJQ18Ebc0RQ", "_blank", "noopener");
+    });
+    vm.addEventListener("close", () => { vf.innerHTML = ""; });
+    vm.querySelector(".vx").addEventListener("click", () => vm.close());
+    vm.addEventListener("click", e => { if (e.target === vm) vm.close(); });
+  }
   // Precios: cuentan hacia arriba al aparecer (el valor final ya está escrito)
   if (window.IntersectionObserver && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const io = new IntersectionObserver(entries => entries.forEach(en => {
