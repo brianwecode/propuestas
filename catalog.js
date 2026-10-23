@@ -65,6 +65,14 @@ const PROGRAMS = {
               "Aprenderemos cómo usar cables, LEDs, servos y otros componentes para crear un semáforo, un detector de lluvia, un brazo robótico y finalmente: ¡un auto!"] },
   ],
 };
+/* Actividades de Jardín (fotos de la presentación para jardines) */
+const KINDER_ACTIVITIES = [
+  { img: "kinder/robots.jpg", label: "Programamos robots" },
+  { img: "kinder/animaciones.jpg", label: "Creamos animaciones digitales" },
+  { img: "kinder/ciencia.jpg", label: "Experimentos de ciencia" },
+  { img: "kinder/construccion.jpg", label: "Construcción y motricidad fina" },
+  { img: "kinder/dispositivos.jpg", label: "Manejo de dispositivos con seguridad" },
+];
 const ALL_PROGRAMS = Object.values(PROGRAMS).flat();
 const programById = id => ALL_PROGRAMS.find(p => p.id === id);
 
