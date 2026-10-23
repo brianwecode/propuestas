@@ -120,11 +120,15 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 .marquee-track { display: flex; width: max-content; animation: scrollx 38s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .marquee-set { display: flex; align-items: center; gap: 18px; padding-right: 18px; }
-.lg { width: 128px; height: 128px; flex: 0 0 auto; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 4px; }
-.lg > div { width: 100%; height: 100%; border: 1px solid #131313; border-radius: 4px; display: flex; align-items: center; justify-content: center; padding: 16px; background: #fff; }
+.logos-rows { display: flex; flex-direction: column; gap: 12px; }
+.logos-row .marquee-set { gap: 12px; padding-right: 12px; }
+.logos-row.r1 .marquee-track { animation-duration: 70s; }
+.logos-row.r2 .marquee-track { animation-duration: 80s; animation-direction: reverse; }
+.lg { width: 96px; height: 96px; flex: 0 0 auto; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 4px; }
+.lg > div { width: 100%; height: 100%; border: 1px solid #131313; border-radius: 4px; display: flex; align-items: center; justify-content: center; padding: 12px; background: #fff; }
 .lg img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
 .trust .count { font-weight: 500; font-size: 16px; color: rgba(255,255,255,.7); margin-left: 10px; }
-@media (max-width: 600px) { .lg { width: 104px; height: 104px; } .lg > div { padding: 12px; } }
+@media (max-width: 600px) { .lg { width: 80px; height: 80px; } .lg > div { padding: 9px; } }
 /* Galería */
 .gallery { margin-top: 40px; overflow: hidden; }
 .gallery .marquee-track { animation-duration: 60s; animation-direction: reverse; }
@@ -283,7 +287,10 @@ function render(st) {
       "<li>Una clase semanal de " + (cur ? "" : "hasta ") + esc(mins) + " minutos</li>" +
       "<li>" + (cur ? "Para todos los alumnos, dentro del horario" : "Optativo: cada familia elige si participa") + "</li></ul></div>";
   }).join("");
-  const logos = SCHOOL_LOGOS.map(l => '<div class="lg"><div><img src="' + IMG + "logos/" + l.file + '" alt="' + esc(l.name) + '"></div></div>').join("");
+  const logoHtml = list => list.map(l => '<div class="lg"><div><img src="' + IMG + "logos/" + l.file + '" alt="' + esc(l.name) + '"></div></div>').join("");
+  const half = Math.ceil(SCHOOL_LOGOS.length / 2);
+  // Cada fila repite su mitad para que la cinta no deje huecos en pantallas anchas
+  const logoRow = (list, cls) => { const set = logoHtml(list) + logoHtml(list); return '<div class="marquee logos-row ' + cls + '"><div class="marquee-track"><div class="marquee-set">' + set + '</div><div class="marquee-set" aria-hidden="true">' + set + "</div></div></div>"; };
   const gallery = GALLERY.map(f => '<img src="' + IMG + "gal/" + f + '" alt="Feria de Proyectos de WeCode">').join("");
   const progs = M.rows.map((r, i) => '<article class="prog reveal" id="prog-' + i + '"><div class="pimg" ' + bgStyle(r.prog.img + ".jpg") + ' role="img" aria-label="' + esc(r.prog.title) + '"></div><div>' +
     '<div class="tags"><span class="pill navy">' + esc(r.label) + '</span><span class="pill ' + MOD[r.mod].cls + '">' + MOD[r.mod].label + "</span></div>" +
@@ -336,7 +343,7 @@ function render(st) {
         .map(t => '<li><img src="' + IMG + 'st/check.svg" alt="">' + t + "</li>").join("") +
       '</ul></div><div class="ph reveal" ' + bgStyle("classroom.jpg") + '><img src="' + IMG + 'st/code.svg" alt=""></div></div></section>'
       +
-    '<section class="trust"><div class="wrap"><p class="lbl">Confían en WeCode<span class="count">' + SCHOOL_LOGOS.length + ' instituciones</span></p></div><div class="marquee" aria-label="Colegios que trabajan con WeCode"><div class="marquee-track"><div class="marquee-set">' + logos + '</div><div class="marquee-set" aria-hidden="true">' + logos + "</div></div></div></section>"
+    '<section class="trust"><div class="wrap"><p class="lbl">Confían en WeCode<span class="count">' + SCHOOL_LOGOS.length + ' instituciones</span></p></div><div class="logos-rows" aria-label="Colegios que trabajan con WeCode">' + logoRow(SCHOOL_LOGOS.slice(0, half), "r1") + logoRow(SCHOOL_LOGOS.slice(half), "r2") + "</div></section>"
     ) : "") +
 
     '<section class="band glance" id="vistazo"><div class="wrap"><div class="head"><p class="eyebrow">' + esc(school) + ' de un vistazo</p><h2>' +
