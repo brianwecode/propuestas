@@ -267,18 +267,13 @@ details.box li::marker { color: var(--orange); }
 .close h2 { color: var(--yellow); font-size: clamp(38px, 6vw, 64px); }
 .close .lead { color: rgba(255,255,255,.92); }
 .contacts { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; max-width: 520px; }
-.contact { background: #fff; color: var(--navy); border-radius: 24px; padding: 20px 22px; display: flex; gap: 18px; align-items: flex-start; }
+.contact { background: #fff; color: var(--navy); border-radius: 24px; padding: 18px 22px; display: flex; gap: 18px; align-items: center; }
 .contact .info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .contact .av { flex: 0 0 auto; width: 76px; height: 76px; border-radius: 50%; background: var(--orange); overflow: hidden; }
 .contact .av img { width: 100%; height: 100%; display: block; }
-@media (max-width: 480px) { .contact { flex-direction: column; } }
 .contact b { font-size: 21px; font-weight: 800; }
 .contact .role { color: var(--text); font-size: 15px; }
-.contact .lines { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; font-size: 16px; user-select: all; }
-.btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.btn { font: inherit; font-size: 15px; font-weight: 700; border: 0; border-radius: 999px; padding: 11px 18px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-.btn.y { background: var(--yellow); color: var(--navy); }
-.btn.o { background: transparent; color: var(--navy); box-shadow: inset 0 0 0 2px var(--navy); }
+.contact .mail { margin-top: 6px; font-size: 16px; user-select: all; overflow-wrap: anywhere; }
 .close .ph { aspect-ratio: 43 / 44; max-width: 100%; border-radius: 36px; border: 10px solid #fff; background: center / cover no-repeat; position: relative; }
 .close .ph img { position: absolute; left: -36px; bottom: 30px; width: 88px; }
 .foot { background: var(--blue-deep); color: #fff; padding-block: 20px calc(20px + env(safe-area-inset-bottom, 0px)); font-size: 15px; }
@@ -330,10 +325,6 @@ details.box li::marker { color: var(--orange); }
 const IMG = "img/";
 const bgStyle = f => 'style="background-image:url(\'' + IMG + f + '\')"';
 
-function waLink(phone) {
-  const d = String(phone || "").replace(/\D+/g, "").replace(/^0/, "");
-  return d.length >= 8 ? "https://wa.me/598" + d : "";
-}
 
 function render(st) {
   const M = modelFor(st);
@@ -461,11 +452,8 @@ function render(st) {
       '<img class="doodle spin" src="' + IMG + 'd-star1.png" style="left:4%;top:40px;width:40px" alt="">' +
       '<img class="doodle float" src="' + IMG + 'd-cloud1.png" style="left:46%;top:30px;width:130px" alt="">' +
       '<div class="wrap"><div><h2>¿Nos tomamos un café?</h2><p class="lead">Si la propuesta te parece interesante, nos encantaría reunirnos y conversar los detalles. Podemos intercambiar ideas y crear la experiencia que mejor se adapte a ' + esc(school) + ".</p>" +
-      '<div class="contacts">' + contactsFor(st).map(p => { const wa = waLink(p.phone);
-        return '<div class="contact">' + (p.photo ? '<div class="av"><img src="' + IMG + p.photo + '" alt=""></div>' : "") + '<div class="info"><b>' + esc(p.name) + '</b><span class="role">' + esc(p.role) + '</span><div class="lines">' +
-          (p.email ? "<span>" + esc(p.email) + "</span>" : "") + (p.phone ? "<span>" + esc(p.phone) + "</span>" : "") + "</div>" +
-          '<div class="btns">' + (wa ? '<a class="btn y" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>' : "") +
-          (p.email ? '<button type="button" class="btn o copy-mail" data-email="' + esc(p.email) + '">Copiar email</button>' : "") + "</div></div></div>"; }).join("") + "</div></div>" +
+      '<div class="contacts">' + contactsFor(st).map(p => '<div class="contact">' + (p.photo ? '<div class="av"><img src="' + IMG + p.photo + '" alt=""></div>' : "") +
+        '<div class="info"><b>' + esc(p.name) + '</b><span class="role">' + esc(p.role) + "</span>" + (p.email ? '<span class="mail">' + esc(p.email) + "</span>" : "") + "</div></div>").join("") + "</div></div>" +
       '<div class="ph" ' + bgStyle("certificates.jpg") + '><img src="' + IMG + 'st/heart.svg" alt=""></div></div></section>' +
     '<footer class="foot"><div class="wrap"><span>info@wecode.edu.uy</span><span>093 780 720</span><a href="https://www.wecode.edu.uy" target="_blank" rel="noopener">wecode.edu.uy</a></div></footer>';
 
@@ -477,11 +465,6 @@ function render(st) {
     el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
   }));
   // Copiar email
-  document.querySelectorAll(".copy-mail").forEach(cm => cm.addEventListener("click", () => {
-    const done = () => { cm.textContent = "Email copiado"; setTimeout(() => (cm.textContent = "Copiar email"), 2200); };
-    const fallback = () => { const r = document.createRange(); const n = cm.closest(".contact").querySelector(".lines span"); if (n) { r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } cm.textContent = "Seleccionado: copialo"; };
-    try { navigator.clipboard.writeText(cm.dataset.email).then(done, fallback); } catch (e) { fallback(); }
-  }));
   // Links internos: se mueve con JS para no pisar el código de la propuesta que va después del #
   document.querySelectorAll("a[data-scroll]").forEach(a => a.addEventListener("click", e => {
     const el = document.querySelector(a.getAttribute("href"));
