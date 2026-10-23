@@ -106,12 +106,16 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 .pcard.cur { background: var(--blue); color: #fff; }
 .pcard.ext { background: var(--yellow); color: var(--navy); }
 .pcard .mod { display: block; font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
-.pcard .num { display: block; font-size: clamp(50px, 6vw, 66px); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin-top: 4px; }
+.pcard .num { display: block; font-size: 34px; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; font-variant-numeric: tabular-nums; margin-top: 4px; }
 .pcard .unit { font-size: 15px; opacity: .85; }
 .pcard ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15.5px; line-height: 1.4; flex: 1 1 220px; min-width: 0; }
 .pcard li { padding-left: 22px; position: relative; }
 .pcard li::before { content: ""; position: absolute; left: 0; top: 7px; width: 10px; height: 10px; border-radius: 50%; background: currentColor; opacity: .5; }
-.glance .note { margin-top: 22px; font-size: 14px; color: var(--muted); }
+.glance .sub { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); margin: 34px 0 0; }
+.glance .track { margin-top: 16px; }
+.pnotes { list-style: none; margin: 26px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 10px 32px; font-size: 15px; line-height: 1.45; }
+.pnotes li { padding-left: 20px; position: relative; }
+.pnotes li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
 
 /* Logos */
 .band.trust { background: #355d9c; }
@@ -333,7 +337,6 @@ function render(st) {
   const M = modelFor(st);
   const school = String(st.school || "tu colegio");
   document.title = "Propuesta WeCode " + st.year + " · " + school;
-  const nGr = M.sel.length;
   const chip = (g, i) => {
     const x = st.grades[g.id];
     const row = M.progRows.findIndex(r => r.grades.includes(g));
@@ -343,12 +346,12 @@ function render(st) {
       '<span class="tip">' + esc(programById(x.program).title) + "</span></button>";
   };
   let gi = 0;
-  const grp = (name, lvl) => '<div><div class="grp-name">' + name + '</div><div class="chips">' + GRADES.filter(g => g.level === lvl).map(g => chip(g, gi++)).join("") + "</div></div>";
+  const grp = (name, test) => '<div><div class="grp-name">' + name + '</div><div class="chips">' + GRADES.filter(test).map(g => chip(g, gi++)).join("") + "</div></div>";
   const priceCards = M.mods.map(m => {
     const cur = m === "curricular";
     const price = cur ? st.priceCur : st.priceExt;
     const mins = cur ? st.minCur : st.minExt;
-    return '<div class="pcard reveal ' + MOD[m].cls + '"><div><span class="mod">' + MOD[m].label + '</span><span class="num" data-count="' + (Number(price) || 0) + '">' + money(price) + '</span><span class="unit">por alumno, por mes</span></div><ul>' +
+    return '<div class="pcard reveal ' + MOD[m].cls + '"><div><span class="mod">' + MOD[m].label + '</span><span class="num">' + money(price) + '</span><span class="unit">por alumno, por mes</span></div><ul>' +
       "<li>" + esc(joinY(M.modRows(m).map(r => r.label))) + "</li>" +
       "<li>Una clase semanal de " + (cur ? "" : "hasta ") + esc(mins) + " minutos</li>" +
       "<li>" + (cur ? "Para todos los alumnos, dentro del horario" : "Optativo: cada familia elige si participa") + "</li></ul></div>";
@@ -404,7 +407,7 @@ function render(st) {
 
   document.getElementById("app").innerHTML =
     '<header class="top"><div class="wrap"><img src="' + IMG + 'logo-white.png" alt="WeCode"><nav>' +
-      '<a href="#vistazo">Resumen</a><a href="#programas">Programas</a><a href="#condiciones">Condiciones</a><a class="cta" href="#contacto">Hablemos</a></nav></div></header>' +
+      '<a href="#programas">Programas</a><a href="#vistazo">Precios</a><a href="#condiciones">Condiciones</a><a class="cta" href="#contacto">Hablemos</a></nav></div></header>' +
 
     '<section class="band blue hero">' +
       '<img class="doodle float slow hide-sm" src="' + IMG + 'd-cloud1.png" style="left:6%;top:30px;width:150px" alt="">' +
@@ -420,7 +423,7 @@ function render(st) {
         '<p class="tag">Pensamiento computacional, programación y robótica.</p>' +
         (longDate(st.date) ? '<p class="meta">' + esc(longDate(st.date)) + "</p>" : "") + "</div>" +
         '<div class="ph rise" style="animation-delay:.15s;background-image:url(\'' + cssUrl(coverPhoto(st)) + '\')"><img class="stk" src="' + IMG + 'st/happy.svg" alt=""></div>' +
-      '</div><a class="scroll" href="' + (st.intro !== false ? "#quienes" : "#vistazo") + '">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
+      '</div><a class="scroll" href="' + (st.intro !== false ? "#quienes" : "#programas") + '">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
 
     (st.intro !== false ? (
     '<section class="band pale about" id="quienes"><div class="wrap"><div class="reveal"><p class="eyebrow">Qué hace WeCode</p><h2>Programación y robótica, dentro de tu colegio</h2><ul>' +
@@ -431,14 +434,6 @@ function render(st) {
       +
     '<section class="band trust" id="colegios"><div class="wrap"><h2>Confían en WeCode</h2><div class="logo-grid">' + logoHtml(SCHOOL_LOGOS) + "</div></div></section>"
     ) : "") +
-
-    '<section class="band glance" id="vistazo"><div class="wrap"><div class="head"><p class="eyebrow">' + esc(school) + ' de un vistazo</p><h2>' +
-      nGr + (nGr === 1 ? " grado" : " grados") + ", " + M.progRows.length + (M.progRows.length === 1 ? " programa" : " programas") + " y un año de proyectos</h2></div>" +
-      '<div class="track">' + grp("Primaria", "primaria") + grp("Secundaria", "secundaria") + "</div>" +
-      '<div class="legend">' + M.mods.map(m => '<span><i style="background:' + (m === "curricular" ? "var(--blue)" : "var(--yellow)") + '"></i>' + MOD[m].label + "</span>").join("") +
-        '<span><i style="background:var(--chip-off)"></i>No incluido</span><span style="color:var(--muted)">Tocá un grado para ver su programa</span></div>' +
-      '<div class="prices">' + priceCards + "</div>" +
-      '<p class="note">10 mensualidades, de marzo a diciembre · Todos los materiales incluidos</p></div></section>' +
 
     '<section class="band" id="programas"><div class="wrap"><p class="eyebrow">Propuesta pedagógica</p><h2>Qué van a aprender y crear</h2>' + progs + "</div></section>" +
 
@@ -457,6 +452,15 @@ function render(st) {
         '<img class="fdeco fdip float slow" src="' + IMG + 'feria/diploma.png" alt=""><img class="fdeco fmedal float rev" src="' + IMG + 'feria/medal.png" alt=""></div></div></section>' +
       '<dialog class="vmodal" id="vmodal" aria-label="Video de la Feria de Proyectos"><button type="button" class="vx" aria-label="Cerrar video">×</button><div class="vframe"></div>' +
         '<a class="vyt" href="https://www.youtube.com/watch?v=PJQ18Ebc0RQ" target="_blank" rel="noopener">Ver en YouTube ↗</a></dialog>' +
+
+    '<section class="band glance" id="vistazo"><div class="wrap"><h2>Propuesta económica</h2>' +
+      '<p class="sub">Grados incluidos en esta propuesta</p>' +
+      '<div class="track">' + grp("Jardín", g => g.kind === "jardin") + grp("Primaria", g => g.level === "primaria" && g.kind !== "jardin") + grp("Secundaria", g => g.level === "secundaria") + "</div>" +
+      '<div class="legend">' + M.mods.map(m => '<span><i style="background:' + (m === "curricular" ? "var(--blue)" : "var(--yellow)") + '"></i>' + MOD[m].label + "</span>").join("") +
+        '<span><i style="background:var(--chip-off)"></i>No incluido</span></div>' +
+      '<div class="prices">' + priceCards + "</div>" +
+      '<ul class="pnotes"><li>10 cuotas, de marzo a diciembre.</li><li>Incluye todos los materiales, a excepción de las computadoras, que provee la institución.</li>' +
+        '<li>Se abona del 1 al 10 de cada mes, por transferencia bancaria.</li><li>WeCode es contribuyente exonerado de IVA: el precio es final.</li></ul></div></section>' +
 
     '<section class="band" id="condiciones"><div class="wrap"><p class="eyebrow">Condiciones</p><h2>La letra chica, clara</h2><div class="acc">' + termCols + "</div>" +
       (annex ? '<div style="margin-top:56px"><p class="eyebrow">Anexo</p><h2>Alineación curricular</h2><p class="lead">Cómo el programa de WeCode cumple con los requerimientos de ANEP y DGES para los grados de esta propuesta.</p><div class="acc">' + annex + "</div></div>" : "") +
@@ -499,17 +503,7 @@ function render(st) {
     vm.querySelector(".vx").addEventListener("click", () => vm.close());
     vm.addEventListener("click", e => { if (e.target === vm) vm.close(); });
   }
-  // Precios: cuentan hacia arriba al aparecer (el valor final ya está escrito)
-  if (window.IntersectionObserver && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const io = new IntersectionObserver(entries => entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      io.unobserve(en.target);
-      const el = en.target, end = Number(el.dataset.count) || 0, t0 = performance.now(), dur = 1100;
-      const step = t => { const k = Math.min(1, (t - t0) / dur); el.textContent = money(Math.round(end * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(step); };
-      requestAnimationFrame(step);
-    }), { threshold: .6 });
-    document.querySelectorAll(".num[data-count]").forEach(n => io.observe(n));
-  }
+
 }
 
 function renderEmpty(msg, detail) {
