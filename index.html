@@ -443,7 +443,7 @@ function render(st) {
       '<div class="fcols" aria-label="Fotos de la Feria de Proyectos" role="img">' + fcol(GALLERY.slice(0, half), "up") + fcol(GALLERY.slice(half), "down") +
         '<img class="fdeco fdip float slow" src="' + IMG + 'feria/diploma.png" alt=""><img class="fdeco fmedal float rev" src="' + IMG + 'feria/medal.png" alt=""></div></div></section>' +
       '<dialog class="vmodal" id="vmodal" aria-label="Video de la Feria de Proyectos"><button type="button" class="vx" aria-label="Cerrar video">×</button><div class="vframe"></div>' +
-        '<a class="vyt" href="https://www.youtube.com/watch?v=PJQ18Ebc0RQ" target="_blank" rel="noopener">Ver en YouTube ↗</a></dialog>' +
+        '<a class="vyt" href="https://www.youtube.com/watch?v=3-CqHqpepQc" target="_blank" rel="noopener">Ver en YouTube ↗</a></dialog>' +
 
     '<section class="band glance" id="vistazo"><div class="wrap"><h2>Propuesta económica</h2>' +
       '<p class="sub">Grados incluidos en esta propuesta</p>' +
@@ -489,8 +489,8 @@ function render(st) {
   if (vm && vb) {
     const vf = vm.querySelector(".vframe");
     vb.addEventListener("click", () => {
-      vf.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/PJQ18Ebc0RQ?autoplay=1&rel=0" title="Feria de Proyectos de WeCode" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-      if (vm.showModal) vm.showModal(); else window.open("https://www.youtube.com/watch?v=PJQ18Ebc0RQ", "_blank", "noopener");
+      vf.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/3-CqHqpepQc?autoplay=1&rel=0" title="Feria de Proyectos de WeCode" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      if (vm.showModal) vm.showModal(); else window.open("https://www.youtube.com/watch?v=3-CqHqpepQc", "_blank", "noopener");
     });
     vm.addEventListener("close", () => { vf.innerHTML = ""; });
     vm.querySelector(".vx").addEventListener("click", () => vm.close());
