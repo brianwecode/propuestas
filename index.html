@@ -154,16 +154,15 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 .level-box .plus.sky { color: var(--sky); }
 .level-name { position: relative; font-size: clamp(40px, 6vw, 64px); line-height: 1.02; font-weight: 800; color: var(--navy); margin: 0; }
 .level-box .progs { position: relative; margin-top: 36px; gap: 56px; }
-.lv-primaria { background-color: #fff3cf; background-image: linear-gradient(rgba(255,255,255,.85) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.85) 1.5px, transparent 1.5px); }
-.lv-secundaria { background-color: var(--navy); background-image: linear-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.06) 1.5px, transparent 1.5px); color: #fff; }
+.lv-primaria { background-color: #fff3cf; background-image: linear-gradient(rgba(255,255,255,.2) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.2) 1.5px, transparent 1.5px); }
+.lv-secundaria { background-color: var(--navy); background-image: linear-gradient(rgba(255,255,255,.2) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.2) 1.5px, transparent 1.5px); color: #fff; }
 .lv-secundaria .level-name, .lv-secundaria .prog h3 { color: #fff; }
 .lv-secundaria .prog p { color: rgba(255,255,255,.85); }
 .lv-secundaria .pill.navy { background: #fff; color: var(--navy); }
-.lv-secundaria .prog .pimg { box-shadow: 0 0 0 6px rgba(255,255,255,.08); }
 @media (max-width: 600px) { .level-box { padding: 32px 20px; } .level-box .hide-sm { display: none; } .level-box .kd.float { width: 64px !important; right: 14px !important; top: 16px !important; } }
 /* Jardín: celeste cuadriculado con bloques */
 .kinder { position: relative; overflow: hidden; margin-top: 40px; border-radius: 32px; padding: 48px 48px 44px; scroll-margin-top: 90px;
-  background-color: #dff3fa; background-image: linear-gradient(rgba(255,255,255,.8) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.8) 1.5px, transparent 1.5px); background-size: 30px 30px; }
+  background-color: #dff3fa; background-image: linear-gradient(rgba(255,255,255,.2) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.2) 1.5px, transparent 1.5px); background-size: 30px 30px; }
 .kinder .kd { position: absolute; pointer-events: none; }
 .kinder .stack-img { right: 40px; top: 34px; width: 220px; }
 .kinder .plus { font-size: 38px; font-weight: 800; color: var(--orange); line-height: 1; }
@@ -182,7 +181,8 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 @media (max-width: 600px) { .kinder { padding: 32px 20px; } .acts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .kinder .stack-img { width: 78px; right: 14px; top: 14px; } .kinder-txt { padding-top: 64px; } .kinder .hide-sm, .kinder .kd.float, .kinder .plus { display: none; } }
 .prog { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; scroll-margin-top: 90px; }
 .prog:nth-child(even) .pimg { order: 2; }
-.prog .pimg { aspect-ratio: 16 / 10; max-width: 100%; border-radius: 28px; background: #f3f5f8 center / cover no-repeat; transition: transform .35s; }
+/* Foto estilo sticker: recuadro negro fino, marco blanco y borde gris claro (como los logos) */
+.prog .pimg { aspect-ratio: 16 / 10; max-width: 100%; margin: 8px; border-radius: 12px; border: 1px solid #131313; box-shadow: 0 0 0 7px #fff, 0 0 0 8px #e5e5e5; background: #f3f5f8 center / cover no-repeat; transition: transform .35s; }
 .prog:hover .pimg { transform: rotate(-1.2deg) scale(1.015); }
 .prog .tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .prog h3 { font-size: clamp(26px, 3vw, 34px); line-height: 1.12; font-weight: 800; color: var(--navy); margin: 14px 0 10px; }
