@@ -389,7 +389,7 @@ function render(st) {
   );
   const termCols = termsFor(M, st).map((c, i) => '<details class="box ' + c.cls + '"' + (i === 0 ? " open" : "") + "><summary>" + (c.cls ? '<span class="dot ' + c.cls + '"></span>' : "") + esc(c.title) +
     '</summary><div class="in"><ul>' + c.items.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul></div></details>").join("");
-  const annex = annexSections(M).map(s => '<a class="box annex-link" href="?anexo=' + s.key + location.hash + '" target="_blank" rel="noopener">' + esc(s.title) + '<span aria-hidden="true">↗</span></a>').join("");
+  const annex = annexSections(M).map(s => '<a class="box annex-link" href="' + location.pathname + "?anexo=" + s.key + location.hash + '" target="_blank" rel="noopener">' + esc(s.title) + '<span aria-hidden="true">↗</span></a>').join("");
 
   document.getElementById("app").innerHTML =
 
@@ -514,7 +514,8 @@ function renderEmpty(msg, detail) {
 }
 
 async function load() {
-  const token = decodeURIComponent((location.hash || "").slice(1)).trim().toLowerCase();
+  // El código viene después del # o, en los links cortos (propuestas.wecode.edu.uy/colegio), lo inyecta el servidor
+  const token = (decodeURIComponent((location.hash || "").slice(1)) || window.PROPUESTA || "").trim().toLowerCase();
   if (!token) { renderEmpty("Este link no tiene una propuesta"); return; }
   try {
     const st = await decodeProposal(token);
