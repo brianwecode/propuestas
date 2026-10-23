@@ -244,6 +244,14 @@ details.box[open] summary::after { transform: rotate(45deg); }
 .dot { width: 12px; height: 12px; border-radius: 50%; flex: 0 0 auto; }
 .dot.cur { background: var(--blue); } .dot.ext { background: var(--yellow); box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
 details.box .in { padding: 0 24px 22px; }
+a.annex-link { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 20px; background: #f4f7fb; font-size: 19px; font-weight: 700; color: var(--navy); text-decoration: none; }
+a.annex-link span { margin-left: auto; color: var(--orange); font-size: 22px; transition: transform .2s; }
+a.annex-link:hover span { transform: translate(2px, -2px); }
+.annex-top { padding-block: 48px; }
+.annex-top img { width: 150px; display: block; margin-bottom: 28px; }
+.annex-top h1 { color: #fff; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 0; }
+.annex-page { padding-block: 48px 72px; }
+.annex-page ul { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
 details.box ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15.5px; }
 details.box li::marker { color: var(--orange); }
 .tbl { overflow-x: auto; margin: 6px 0 14px; }
@@ -390,13 +398,7 @@ function render(st) {
   );
   const termCols = termsFor(M, st).map((c, i) => '<details class="box ' + c.cls + '"' + (i === 0 ? " open" : "") + "><summary>" + (c.cls ? '<span class="dot ' + c.cls + '"></span>' : "") + esc(c.title) +
     '</summary><div class="in"><ul>' + c.items.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul></div></details>").join("");
-  const annex = annexSections(M).map(s => {
-    const c = CONCL(s.key);
-    return '<details class="box"><summary>' + esc(s.title) + '</summary><div class="in small">' + s.intro.map(p => "<p>" + rich(p) + "</p>").join("") +
-      '<div class="tbl"><table><thead><tr><th>Grado</th><th>Rúbrica / programa oficial</th><th>Propuesta WeCode</th><th>' + s.last + "</th></tr></thead><tbody>" +
-      s.bands.map(k => { const a = ALIGN[k]; return "<tr><td>" + a.label + "</td><td>" + esc(a.rubric) + "</td><td>" + esc(a.wecode) + "</td><td>" + rich(a.note) + "</td></tr>"; }).join("") +
-      "</tbody></table></div><p><strong>Conclusión.</strong> " + esc(c.text) + "</p><ul>" + c.items.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul></div></details>";
-  }).join("");
+  const annex = annexSections(M).map(s => '<a class="box annex-link" href="?anexo=' + s.key + location.hash + '" target="_blank" rel="noopener">' + esc(s.title) + '<span aria-hidden="true">↗</span></a>').join("");
 
   document.getElementById("app").innerHTML =
 
@@ -502,6 +504,26 @@ function render(st) {
 
 }
 
+// Contenido de una sección del anexo (tabla + conclusión)
+function annexBody(s) {
+  const c = CONCL(s.key);
+  return s.intro.map(p => "<p>" + rich(p) + "</p>").join("") +
+    '<div class="tbl"><table><thead><tr><th>Grado</th><th>Rúbrica / programa oficial</th><th>Propuesta WeCode</th><th>' + s.last + "</th></tr></thead><tbody>" +
+    s.bands.map(k => { const a = ALIGN[k]; return "<tr><td>" + a.label + "</td><td>" + esc(a.rubric) + "</td><td>" + esc(a.wecode) + "</td><td>" + rich(a.note) + "</td></tr>"; }).join("") +
+    "</tbody></table></div><p><strong>Conclusión.</strong> " + esc(c.text) + "</p><ul>" + c.items.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul>";
+}
+// Página aparte (se abre en otra pestaña) con una sección del anexo
+function renderAnnex(st, key) {
+  const s = annexSections(modelFor(st)).find(x => x.key === key);
+  if (!s) { renderEmpty("No encontramos esta sección del anexo"); return; }
+  const school = st.school || "tu colegio";
+  document.title = "Alineación curricular · " + school;
+  document.getElementById("app").innerHTML =
+    '<section class="band blue annex-top"><div class="wrap"><img src="' + IMG + 'logo-white.png" alt="WeCode"><p class="eyebrow">Anexo · Propuesta para ' + esc(school) + "</p><h1>" + esc(s.title) + "</h1></div></section>" +
+    '<section class="band annex-page"><div class="wrap small">' + annexBody(s) + "</div></section>" +
+    '<footer class="foot"><div class="wrap"><span>info@wecode.edu.uy</span><span>093 780 720</span><a href="https://www.wecode.edu.uy" target="_blank" rel="noopener">wecode.edu.uy</a></div></footer>';
+}
+
 function renderEmpty(msg, detail) {
   document.title = "Propuesta WeCode";
   document.getElementById("app").innerHTML = '<div class="empty"><img src="' + IMG + 'logo-white.png" alt="WeCode"><h1>' + esc(msg) + "</h1><p>Pedile a tu contacto de WeCode que te reenvíe el link completo, o escribinos a info@wecode.edu.uy.</p>" +
@@ -514,7 +536,8 @@ async function load() {
   try {
     const st = await decodeProposal(token);
     if (!modelFor(st).sel.length) throw new Error("vacía");
-    render(st);
+    const anexo = new URLSearchParams(location.search).get("anexo");
+    if (anexo) renderAnnex(st, anexo); else render(st);
     window.scrollTo(0, 0);
   } catch (e) {
     console.error(e);
