@@ -58,14 +58,6 @@ h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; font-weight: 800; c
 
 /* Barra superior */
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--blue); }
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(52, 98, 172, .92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
-.top img { height: 30px; width: auto; display: block; }
-.top nav { display: flex; gap: 22px; align-items: center; font-size: 15px; color: rgba(255,255,255,.88); }
-.top nav a { text-decoration: none; }
-.top nav a:hover { color: #fff; }
-.top .cta { background: var(--yellow); color: var(--navy); font-weight: 700; padding: 8px 16px; border-radius: 999px; }
-@media (max-width: 760px) { .top nav a:not(.cta) { display: none; } }
 
 /* Portada */
 .hero { padding-block: 64px 96px; }
@@ -407,8 +399,6 @@ function render(st) {
   }).join("");
 
   document.getElementById("app").innerHTML =
-    '<header class="top"><div class="wrap"><img src="' + IMG + 'logo-white.png" alt="WeCode"><nav>' +
-      '<a href="#programas">Programas</a><a href="#vistazo">Precios</a><a href="#condiciones">Condiciones</a><a class="cta" href="#contacto">Hablemos</a></nav></div></header>' +
 
     '<section class="band blue hero">' +
       '<img class="doodle float slow hide-sm" src="' + IMG + 'd-cloud1.png" style="left:6%;top:30px;width:150px" alt="">' +
@@ -424,7 +414,7 @@ function render(st) {
         '<p class="tag">Pensamiento computacional, programación y robótica.</p>' +
         (longDate(st.date) ? '<p class="meta">' + esc(longDate(st.date)) + "</p>" : "") + "</div>" +
         '<div class="ph rise" style="animation-delay:.15s;background-image:url(\'' + cssUrl(coverPhoto(st)) + '\')"><img class="stk" src="' + IMG + 'st/happy.svg" alt=""></div>' +
-      '</div><a class="scroll" href="' + (st.intro !== false ? "#quienes" : "#programas") + '">Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
+      '</div><a class="scroll" href="' + (st.intro !== false ? "#quienes" : "#programas") + '" data-scroll>Ver la propuesta<span aria-hidden="true">↓</span></a></section>' +
 
     (st.intro !== false ? (
     '<section class="band pale about" id="quienes"><div class="wrap"><div class="reveal"><p class="eyebrow">Qué hace WeCode</p><h2>Programación y robótica, dentro de tu colegio</h2><ul>' +
@@ -489,6 +479,13 @@ function render(st) {
     const done = () => { cm.textContent = "Email copiado"; setTimeout(() => (cm.textContent = "Copiar email"), 2200); };
     const fallback = () => { const r = document.createRange(); const n = cm.closest(".contact").querySelector(".lines span"); if (n) { r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } cm.textContent = "Seleccionado: copialo"; };
     try { navigator.clipboard.writeText(cm.dataset.email).then(done, fallback); } catch (e) { fallback(); }
+  }));
+  // Links internos: se mueve con JS para no pisar el código de la propuesta que va después del #
+  document.querySelectorAll("a[data-scroll]").forEach(a => a.addEventListener("click", e => {
+    const el = document.querySelector(a.getAttribute("href"));
+    if (!el) return;
+    e.preventDefault();
+    el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }));
   // Video de la Feria: se abre en un modal y se corta al cerrar
   const vm = document.getElementById("vmodal"), vb = document.getElementById("feriaVid");
