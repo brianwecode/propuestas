@@ -41,6 +41,8 @@ img { max-width: 100%; }
 a { color: inherit; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: var(--gut); padding-right: var(--gut-r); }
 .band { padding-block: 88px; position: relative; overflow: hidden; }
+/* Dos secciones blancas seguidas: sin doble espacio entre ellas */
+.band:is(#programas, #vistazo, #condiciones) + .band:is(#programas, #vistazo, #condiciones) { padding-top: 0; }
 .band.blue { background: var(--blue); color: #fff; }
 .band.pale { background: var(--pale); }
 .eyebrow { font-size: 14px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); margin: 0 0 10px; }
