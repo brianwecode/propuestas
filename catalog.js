@@ -24,7 +24,7 @@ const chipNum = g => g.kind === "jardin" ? "5" : g.short.replace(/\D+/g, "") + "
 const PROGRAMS = {
   k5: [
     { id: "k5-kindertech", option: "KinderTech", title: "KinderTech", img: "jardin",
-      paras: ["Conocemos la tecnología a través del juego, la creatividad y la exploración. Mediante desafíos, juegos y herramientas digitales, comenzamos a desarrollar habilidades como la secuenciación, la identificación de patrones y la resolución de problemas. Cada actividad invita a experimentar, tomar decisiones y crear soluciones propias."] },
+      paras: ["Conocemos la tecnología a través del juego, la creatividad y la exploración. Mediante desafíos, juegos y herramientas digitales, comenzamos a desarrollar habilidades como la secuenciación, la identificación de patrones y la resolución de problemas."] },
   ],
   p12: [
     { id: "p12-edison", option: "Robot Edison y Code Juniors", title: "Primeros pasos de programación", img: "p12-edison",
