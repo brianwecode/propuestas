@@ -147,10 +147,22 @@ button.chip:hover .tip, button.chip:focus-visible .tip { opacity: 1; }
 
 /* Programas */
 .progs { display: flex; flex-direction: column; gap: 64px; margin-top: 28px; }
-.level-block { margin-top: 64px; }
-.level-title { display: inline-block; margin: 0; font-size: 15px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--navy); padding: 6px 16px; border-radius: 999px; }
+/* Primaria y Secundaria: contenedores como el de Jardín, con un tono para cada edad */
+.level-box { position: relative; overflow: hidden; margin-top: 28px; border-radius: 32px; padding: 48px; background-size: 30px 30px; }
+.level-box .kd { position: absolute; pointer-events: none; }
+.level-box .plus { font-size: 38px; font-weight: 800; color: var(--orange); line-height: 1; }
+.level-box .plus.sky { color: var(--sky); }
+.level-name { position: relative; font-size: clamp(40px, 6vw, 64px); line-height: 1.02; font-weight: 800; color: var(--navy); margin: 0; }
+.level-box .progs { position: relative; margin-top: 36px; gap: 56px; }
+.lv-primaria { background-color: #fff3cf; background-image: linear-gradient(rgba(255,255,255,.85) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.85) 1.5px, transparent 1.5px); }
+.lv-secundaria { background-color: var(--navy); background-image: linear-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.06) 1.5px, transparent 1.5px); color: #fff; }
+.lv-secundaria .level-name, .lv-secundaria .prog h3 { color: #fff; }
+.lv-secundaria .prog p { color: rgba(255,255,255,.85); }
+.lv-secundaria .pill.navy { background: #fff; color: var(--navy); }
+.lv-secundaria .prog .pimg { box-shadow: 0 0 0 6px rgba(255,255,255,.08); }
+@media (max-width: 600px) { .level-box { padding: 32px 20px; } .level-box .hide-sm { display: none; } .level-box .kd.float { width: 64px !important; right: 14px !important; top: 16px !important; } }
 /* Jardín: celeste cuadriculado con bloques */
-.kinder { position: relative; overflow: hidden; margin-top: 44px; border-radius: 32px; padding: 48px 48px 44px; scroll-margin-top: 90px;
+.kinder { position: relative; overflow: hidden; margin-top: 40px; border-radius: 32px; padding: 48px 48px 44px; scroll-margin-top: 90px;
   background-color: #dff3fa; background-image: linear-gradient(rgba(255,255,255,.8) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,.8) 1.5px, transparent 1.5px); background-size: 30px 30px; }
 .kinder .kd { position: absolute; pointer-events: none; }
 .kinder .stack-img { right: 40px; top: 34px; width: 220px; }
@@ -323,7 +335,11 @@ function render(st) {
   const indexed = M.progRows.map((r, i) => ({ r, i }));
   const levelBlock = (lvl, name) => {
     const list = indexed.filter(x => x.r.band !== "k5" && x.r.grades[0].level === lvl);
-    return list.length ? '<div class="level-block"><p class="level-title">' + name + '</p><div class="progs">' + list.map(x => progArticle(x.r, x.i)).join("") + "</div></div>" : "";
+    if (!list.length) return "";
+    const deco = lvl === "primaria"
+      ? '<img class="kd float" src="' + IMG + 'd-rocket.png" style="right:36px;top:26px;width:120px;--r:8deg" alt=""><img class="kd spin hide-sm" src="' + IMG + 'd-star1.png" style="right:190px;top:40px;width:34px" alt=""><span class="kd plus hide-sm" style="left:46%;top:34px">+</span>'
+      : '<img class="kd float" src="' + IMG + 'st/code.svg" style="right:40px;top:30px;width:86px;--r:-8deg" alt=""><img class="kd spin hide-sm" src="' + IMG + 'd-star2.png" style="right:160px;top:52px;width:30px" alt=""><span class="kd plus sky hide-sm" style="left:46%;top:34px">+</span>';
+    return '<section class="level-box lv-' + lvl + ' reveal">' + deco + '<h3 class="level-name">' + name + '</h3><div class="progs">' + list.map(x => progArticle(x.r, x.i)).join("") + "</div></section>";
   };
   const kinderRow = indexed.find(x => x.r.band === "k5");
   const progs = (kinderRow ? kinderBlock(kinderRow.r, kinderRow.i) : "") + levelBlock("primaria", "Primaria") + levelBlock("secundaria", "Secundaria");
