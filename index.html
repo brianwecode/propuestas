@@ -95,6 +95,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .chip span { font-size: 12px; font-weight: 500; }
 .chip.cur { background: var(--blue); color: #fff; }
 .chip.ext { background: var(--yellow); color: var(--navy); }
+.chip.tbd { background: var(--sky); color: var(--navy); }
 button.chip { cursor: pointer; transition: transform .18s, box-shadow .18s; }
 button.chip:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(26, 61, 102, .18); }
 .chip .tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--navy); color: #fff; font-size: 12px; font-weight: 500; padding: 5px 9px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; }
@@ -322,7 +323,7 @@ details.box li::marker { color: var(--orange); }
   </div>
 </div>
 
-<script src="catalog.js?v=10"></script>
+<script src="catalog.js?v=11"></script>
 <script>
 "use strict";
 const IMG = "img/";
@@ -457,6 +458,7 @@ function render(st) {
       '<p class="sub">Grados incluidos en esta propuesta</p>' +
       '<div class="track">' + grp("Jardín", g => g.kind === "jardin") + grp("Primaria", g => g.level === "primaria" && g.kind !== "jardin") + grp("Secundaria", g => g.level === "secundaria") + "</div>" +
       '<div class="legend">' + M.mods.map(m => '<span><i style="background:' + (m === "curricular" ? "var(--blue)" : "var(--yellow)") + '"></i>' + MOD[m].label + "</span>").join("") +
+        (M.hasTbd ? '<span><i style="background:var(--sky)"></i>Modalidad a definir</span>' : "") +
         '<span><i style="background:var(--chip-off)"></i>No incluido</span></div>' +
       '<div class="prices">' + priceCards + "</div>" +
       '<ul class="pnotes"><li>10 cuotas, de marzo a diciembre.</li><li>Incluye todos los materiales, a excepción de las computadoras, que provee la institución.</li>' +

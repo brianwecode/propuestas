@@ -106,7 +106,8 @@ const ALIGN = {
 // Si los grados de un programa tienen modalidades distintas, cada etiqueta ya dice su grado y no hace falta la del grupo
 const tagsHtml = r => '<div class="tags">' + (r.pills.length > 1 ? "" : '<span class="pill navy">' + esc(r.label) + "</span>") + r.pills.map(p => '<span class="pill ' + p.cls + '">' + esc(p.label) + "</span>").join("") + "</div>";
 const BAND_ORDER = ["k5", "p12", "p34", "p56", "s78", "s91", "s23"];
-const MOD = { curricular: { label: "Curricular", cls: "cur" }, extra: { label: "Extracurricular", cls: "ext" } };
+// "tbd": modalidad a definir con el colegio (se muestran los dos precios y no lleva etiqueta de modalidad)
+const MOD = { curricular: { label: "Curricular", cls: "cur" }, extra: { label: "Extracurricular", cls: "ext" }, tbd: { label: "A definir", cls: "tbd" } };
 const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
 /* =========================================================
@@ -148,15 +149,16 @@ function modelFor(st) {
     r.prog = programById(r.program);
     const ms = [...new Set(r.items.map(x => x.mod))];
     r.mod = ms[0];
-    r.pills = ms.length === 1 ? [{ cls: MOD[ms[0]].cls, label: MOD[ms[0]].label }]
-      : r.items.map(x => ({ cls: MOD[x.mod].cls, label: gradeName(x.g) + " · " + MOD[x.mod].label }));
+    r.pills = ms.length === 1 ? (ms[0] === "tbd" ? [] : [{ cls: MOD[ms[0]].cls, label: MOD[ms[0]].label }])
+      : r.items.map(x => x.mod === "tbd" ? { cls: "navy", label: gradeName(x.g) } : { cls: MOD[x.mod].cls, label: gradeName(x.g) + " · " + MOD[x.mod].label });
   });
-  const mods = ["curricular", "extra"].filter(m => sel.some(s => s.mod === m));
+  const hasTbd = sel.some(s => s.mod === "tbd");
+  const mods = ["curricular", "extra"].filter(m => hasTbd || sel.some(s => s.mod === m));
   const primBands = ["p12", "p34", "p56"].filter(b => sel.some(s => s.g.band === b));
   const secBands = ["s78", "s91", "s23"].filter(b => sel.some(s => s.g.band === b));
   const certification = sel.some(s => !["k5", "p1", "p2"].includes(s.g.id));
-  return { sel, rows, progRows, mods, primBands, secBands, hasAnnex: primBands.length + secBands.length > 0, certification,
-    modRows: m => rows.filter(r => r.mod === m) };
+  return { sel, rows, progRows, mods, hasTbd, primBands, secBands, hasAnnex: primBands.length + secBands.length > 0, certification,
+    modRows: m => rows.filter(r => r.mod === m || r.mod === "tbd") };
 }
 
 /* Condiciones: textos de las propuestas 2026–2027 */
@@ -304,7 +306,8 @@ function packState(st) {
   const nib = GRADES.map(g => {
     const x = st.grades[g.id];
     if (!x.on) return 0;
-    return 8 | (x.mod === "curricular" ? 4 : 0) | Math.max(0, PROGRAMS[g.band].findIndex(p => p.id === x.program));
+    const prog = Math.max(0, PROGRAMS[g.band].findIndex(p => p.id === x.program));
+    return x.mod === "tbd" ? 4 | prog : 8 | (x.mod === "curricular" ? 4 : 0) | prog; // 4–7: a definir
   });
   for (let k = 0; k < nib.length; k += 2) b.push((nib[k] << 4) | (nib[k + 1] || 0));
   u16(st.priceCur); u16(st.priceExt); u8(st.minCur); u8(st.minExt); u16(st.refAcademy); u16(st.refAllies);
@@ -331,7 +334,7 @@ function unpackState(b) {
   for (let k = 0; k < Math.ceil(GRADES.length / 2); k++) { const v = u8(); nib.push(v >> 4, v & 15); }
   GRADES.forEach((g, k) => {
     const v = nib[k], progs = PROGRAMS[g.band];
-    st.grades[g.id] = v & 8 ? { on: true, mod: v & 4 ? "curricular" : "extra", program: (progs[v & 3] || progs[0]).id }
+    st.grades[g.id] = v & 12 ? { on: true, mod: v & 8 ? (v & 4 ? "curricular" : "extra") : "tbd", program: (progs[v & 3] || progs[0]).id }
       : { on: false, program: progs[0].id, mod: "extra" };
   });
   st.priceCur = u16(); st.priceExt = u16(); st.minCur = u8(); st.minExt = u8(); st.refAcademy = u16(); st.refAllies = u16();
