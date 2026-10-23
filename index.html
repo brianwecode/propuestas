@@ -270,7 +270,7 @@ details.box li::marker { color: var(--orange); }
   </div>
 </div>
 
-<script src="catalog.js?v=7"></script>
+<script src="catalog.js?v=9"></script>
 <script>
 "use strict";
 const IMG = "img/";
@@ -288,7 +288,7 @@ function render(st) {
   const nGr = M.sel.length;
   const chip = (g, i) => {
     const x = st.grades[g.id];
-    const row = M.rows.findIndex(r => r.grades.includes(g));
+    const row = M.progRows.findIndex(r => r.grades.includes(g));
     const inner = "<b>" + chipNum(g) + "</b><span>" + g.chip + "</span>";
     if (!x.on) return '<div class="chip pop" style="animation-delay:' + (i * 45) + 'ms">' + inner + "</div>";
     return '<button type="button" class="chip pop ' + MOD[x.mod].cls + '" style="animation-delay:' + (i * 45) + 'ms" data-row="' + row + '" aria-label="' + esc(gradeName(g) + ": " + programById(x.program).title) + '">' + inner +
@@ -307,7 +307,7 @@ function render(st) {
   }).join("");
   const logoHtml = list => list.map(l => '<div class="lg"><div><img src="' + IMG + "logos/" + l.file + '" alt="' + esc(l.name) + '"></div></div>').join("");
   const gallery = GALLERY.map(f => '<img src="' + IMG + "gal/" + f + '" alt="Feria de Proyectos de WeCode">').join("");
-  const tagsOf = r => '<div class="tags"><span class="pill navy">' + esc(r.label) + '</span><span class="pill ' + MOD[r.mod].cls + '">' + MOD[r.mod].label + "</span></div>";
+  const tagsOf = tagsHtml;
   const progArticle = (r, i) => '<article class="prog reveal" id="prog-' + i + '"><div class="pimg" ' + bgStyle(r.prog.img + ".jpg") + ' role="img" aria-label="' + esc(r.prog.title) + '"></div><div>' +
     tagsOf(r) + "<h3>" + esc(r.prog.title) + "</h3>" + r.prog.paras.map(p => "<p>" + rich(p) + "</p>").join("") + "</div></article>";
   const kinderBlock = (r, i) => '<article class="kinder reveal" id="prog-' + i + '">' +
@@ -320,7 +320,7 @@ function render(st) {
       '<p class="acts-title">¿Qué hacemos?</p><div class="acts">' +
       KINDER_ACTIVITIES.map((a, k) => '<div class="act" style="--r:' + [-2, 1.5, -1, 2, -1.5][k] + 'deg"><div class="aimg" ' + bgStyle(a.img) + '></div><span>' + esc(a.label) + "</span></div>").join("") +
       "</div></article>";
-  const indexed = M.rows.map((r, i) => ({ r, i }));
+  const indexed = M.progRows.map((r, i) => ({ r, i }));
   const levelBlock = (lvl, name) => {
     const list = indexed.filter(x => x.r.band !== "k5" && x.r.grades[0].level === lvl);
     return list.length ? '<div class="level-block"><p class="level-title">' + name + '</p><div class="progs">' + list.map(x => progArticle(x.r, x.i)).join("") + "</div></div>" : "";
@@ -379,7 +379,7 @@ function render(st) {
     ) : "") +
 
     '<section class="band glance" id="vistazo"><div class="wrap"><div class="head"><p class="eyebrow">' + esc(school) + ' de un vistazo</p><h2>' +
-      nGr + (nGr === 1 ? " grado" : " grados") + ", " + M.rows.length + (M.rows.length === 1 ? " programa" : " programas") + " y un año de proyectos</h2></div>" +
+      nGr + (nGr === 1 ? " grado" : " grados") + ", " + M.progRows.length + (M.progRows.length === 1 ? " programa" : " programas") + " y un año de proyectos</h2></div>" +
       '<div class="track">' + grp("Primaria", "primaria") + grp("Secundaria", "secundaria") + "</div>" +
       '<div class="legend">' + M.mods.map(m => '<span><i style="background:' + (m === "curricular" ? "var(--blue)" : "var(--yellow)") + '"></i>' + MOD[m].label + "</span>").join("") +
         '<span><i style="background:var(--chip-off)"></i>No incluido</span><span style="color:var(--muted)">Tocá un grado para ver su programa</span></div>' +

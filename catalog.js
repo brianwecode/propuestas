@@ -102,6 +102,9 @@ const ALIGN = {
     wecode: "Los estudiantes programan sensores, luces y motores para crear sistemas automatizados como semáforos, detectores de lluvia, brazos robóticos o autos. Aprenden circuitos, electrónica básica y diseño de prototipos, integrando hardware y software.",
     note: "**Cumple y supera.** Integra robótica aplicada, pensamiento sistémico y prototipado funcional, alineado con los objetivos de la orientación tecnológica de EMS." },
 };
+/* Etiquetas de grado y modalidad de un programa */
+// Si los grados de un programa tienen modalidades distintas, cada etiqueta ya dice su grado y no hace falta la del grupo
+const tagsHtml = r => '<div class="tags">' + (r.pills.length > 1 ? "" : '<span class="pill navy">' + esc(r.label) + "</span>") + r.pills.map(p => '<span class="pill ' + p.cls + '">' + esc(p.label) + "</span>").join("") + "</div>";
 const BAND_ORDER = ["k5", "p12", "p34", "p56", "s78", "s91", "s23"];
 const MOD = { curricular: { label: "Curricular", cls: "cur" }, extra: { label: "Extracurricular", cls: "ext" } };
 const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -132,11 +135,27 @@ function modelFor(st) {
     else rows.push({ band: s.g.band, program: s.program, mod: s.mod, grades: [s.g] });
   });
   rows.forEach(r => { r.label = groupLabel(r.grades); r.prog = programById(r.program); });
+  // Para mostrar los programas: un mismo programa aparece una sola vez aunque sus grados tengan modalidades distintas
+  const progRows = [];
+  sel.forEach(s => {
+    const last = progRows[progRows.length - 1];
+    if (last && last.band === s.g.band && last.program === s.program) last.items.push(s);
+    else progRows.push({ band: s.g.band, program: s.program, items: [s] });
+  });
+  progRows.forEach(r => {
+    r.grades = r.items.map(x => x.g);
+    r.label = groupLabel(r.grades);
+    r.prog = programById(r.program);
+    const ms = [...new Set(r.items.map(x => x.mod))];
+    r.mod = ms[0];
+    r.pills = ms.length === 1 ? [{ cls: MOD[ms[0]].cls, label: MOD[ms[0]].label }]
+      : r.items.map(x => ({ cls: MOD[x.mod].cls, label: gradeName(x.g) + " · " + MOD[x.mod].label }));
+  });
   const mods = ["curricular", "extra"].filter(m => sel.some(s => s.mod === m));
   const primBands = ["p12", "p34", "p56"].filter(b => sel.some(s => s.g.band === b));
   const secBands = ["s78", "s91", "s23"].filter(b => sel.some(s => s.g.band === b));
   const certification = sel.some(s => !["k5", "p1", "p2"].includes(s.g.id));
-  return { sel, rows, mods, primBands, secBands, hasAnnex: primBands.length + secBands.length > 0, certification,
+  return { sel, rows, progRows, mods, primBands, secBands, hasAnnex: primBands.length + secBands.length > 0, certification,
     modRows: m => rows.filter(r => r.mod === m) };
 }
 
